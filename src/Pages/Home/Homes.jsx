@@ -1,6 +1,9 @@
 import React from "react";
 import FloatingLeaves from "../../components/Animations/FloatingLeaves";
 import { useLanguage } from "../../Context/LanguageContext";
+import MiddleSection from "../../components/MiddleSection/MiddleSection";
+import HowItHelps from "../../components/HowItHelps/HowItHelps";
+import Footer from "../../components/Footer/Footer";
 
 const Home = () => {
   const { t } = useLanguage();
@@ -127,11 +130,12 @@ const Home = () => {
 
       {/* ================= NEXT SECTION ================= */}
       {/*
-        Yahan baad me MiddleSection add karenge.
-
-        <MiddleSection />
+       
+      middle section 
       */}
-
+    <MiddleSection />
+    <HowItHelps />
+     <Footer />
     </main>
   );
 };

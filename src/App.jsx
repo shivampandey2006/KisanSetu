@@ -1,15 +1,17 @@
 import Header from "./components/Header/Header";
 import Home from "./Pages/Home/Homes";
+import ScrollProgress from "./components/ScrollProgress";
 
 const App = () => {
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
+    <>
+      <ScrollProgress />
 
-      <Header />
-
-      <Home />
-
-    </div>
+      <div className="min-h-screen bg-white dark:bg-gray-950">
+        <Header />
+        <Home />
+      </div>
+    </>
   );
 };
 
