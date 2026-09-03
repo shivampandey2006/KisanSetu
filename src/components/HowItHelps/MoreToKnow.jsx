@@ -586,8 +586,8 @@ const MoreToKnow = () => {
       <section className="relative px-5 pb-16 md:px-10 lg:px-20">
         <div className="mx-auto max-w-6xl">
           <div className="relative overflow-hidden rounded-3xl bg-green-600 px-6 py-12 text-center text-white md:px-12">
-            <div className="pulse-glow pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full bg-white/20 blur-3xl" />
-            <div className="pulse-glow pointer-events-none absolute -left-10 -bottom-10 h-56 w-56 rounded-full bg-amber-300/20 blur-3xl" />
+            <div className="pulse-glow pointer-events-none absolute -right-10 -top-10 h-56 w-56 rounded-full blur-3xl" />
+            <div className="pulse-glow pointer-events-none absolute -left-10 -bottom-10 h-56 w-56 rounded-full blur-3xl" />
             <FloatingLeaf top="10%" right="10%" size={30} delay="0.5s" duration="7.5s" rotate={20} className="opacity-40" />
             <FloatingLeaf bottom="12%" left="8%" size={24} delay="1.4s" duration="8.5s" rotate={-15} flip className="opacity-40" />
 
@@ -599,7 +599,7 @@ const MoreToKnow = () => {
 
             <Link
               to="/"
-              className="cta-btn-3d relative mt-7 inline-flex items-center gap-2 overflow-hidden rounded-xl bg-green-600 px-3 py-4  font-semibold text-white border-2 border-white"
+              className=" hover:animate-bounce mt-7 inline-flex items-center gap-2 overflow-hidden rounded-xl bg-green-600 px-3 py-4  font-semibold text-white border-2 border-white"
             >
               <span className="cta-ring pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100" />
               <ArrowLeft size={18} />
