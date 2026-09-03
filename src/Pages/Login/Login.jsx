@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { languages } from "../../Data/Translations";
 import { useLanguage } from "../../Context/LanguageContext";
 
@@ -55,11 +55,18 @@ const Login = () => {
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const navigate = useNavigate();
+
   const isLogin = mode === "login";
+
+  // LOGIN → FARMER DASHBOARD
+  const handleLogin = () => {
+    navigate("/farmer-dashboard");
+  };
 
   return (
     <div className="flex min-h-80% w-[80%] pt-20 mx-auto flex-col bg-[#f6fbf4] dark:bg-[#09090bea] md:flex-row">
-      
+
       <style>{`
         @keyframes leafDrift {
           0%, 100% {
@@ -206,7 +213,13 @@ const Login = () => {
           {/* FORM */}
           <form
             className="mt-8 space-y-5"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={(e) => {
+              e.preventDefault();
+
+              if (isLogin) {
+                handleLogin();
+              }
+            }}
           >
 
             {/* FULL NAME */}
