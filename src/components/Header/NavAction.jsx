@@ -10,6 +10,7 @@ import {
 
 import { useLanguage } from "../../Context/LanguageContext";
 import { languages } from "../../Data/Translations";
+import { Link } from "react-router-dom";
 
 const NavAction = ({ darkMode, setDarkMode }) => {
 
@@ -251,7 +252,10 @@ const NavAction = ({ darkMode, setDarkMode }) => {
         <UserRound size={16} />
 
         <span>
-          {t("login")}
+        
+<Link to="/login">
+  {t("login")}
+</Link>
         </span>
 
       </button>

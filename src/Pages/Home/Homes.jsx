@@ -135,7 +135,7 @@ const Home = () => {
       */}
     <MiddleSection />
     <HowItHelps />
-     <Footer />
+   
     </main>
   );
 };
