@@ -1,0 +1,186 @@
+/* =========================================
+   FLOATING LEAVES
+========================================= */
+
+.floating-leaves {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  pointer-events: none;
+
+  /* Hero ke content ke peeche,
+     lekin hero background ke upar */
+  z-index: 1;
+}
+
+
+/* =========================================
+   COMMON LEAF
+========================================= */
+
+.floating-leaf {
+  position: absolute;
+
+  display: block;
+
+  opacity: 0;
+
+  will-change: transform, opacity;
+
+  /* Koi side movement nahi */
+  transform-origin: center;
+}
+
+
+/* =========================================
+   LEAF SIZES
+========================================= */
+
+.leaf-1 {
+  width: 30px;
+  height: 30px;
+
+  left: 4%;
+  bottom: -60px;
+
+  animation: leafFall 11s linear infinite;
+  animation-delay: 0s;
+}
+
+
+.leaf-2 {
+  width: 35px;
+  height: 20px;
+
+  left: 12%;
+  bottom: -70px;
+
+  animation: leafFall 13s linear infinite;
+  animation-delay: 3s;
+}
+
+
+.leaf-3 {
+  width: 15px;
+  height: 20px;
+
+  left: 20%;
+  bottom: -50px;
+
+  animation: leafFall 10s linear infinite;
+  animation-delay: 5s;
+}
+
+
+.leaf-4 {
+  width: 28px;
+  height: 28px;
+
+  left: 15%;
+  bottom: -60px;
+
+  animation: leafFall 12s linear infinite;
+  animation-delay: 7s;
+}
+
+
+.leaf-5 {
+  width: 18px;
+  height: 28px;
+
+  left: 8%;
+  bottom: -50px;
+
+  animation: leafFall 14s linear infinite;
+  animation-delay: 9s;
+}
+
+
+/* =========================================
+   BOTTOM → TOP
+
+   ONLY VERTICAL MOVEMENT
+
+   No tracer
+   No sideways movement
+   No zig-zag
+========================================= */
+
+@keyframes leafFall {
+
+  /* Bottom */
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+
+  /* Slowly appear */
+  8% {
+    opacity: 0.85;
+  }
+
+  /* Straight upward */
+  30% {
+    transform: translateY(-25vh) rotate(0deg);
+    opacity: 0.75;
+  }
+
+  55% {
+    transform: translateY(-50vh) rotate(0deg);
+    opacity: 0.2;
+  }
+
+  75% {
+    transform: translateY(-70vh) rotate(0deg);
+    opacity: 0;
+  }
+
+  /* Fade near top */
+  90% {
+    opacity: 0;
+  }
+
+  /* Leave screen */
+  100% {
+    transform: translateY(-115vh) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .leaf-1 {
+    width: 18px;
+    height: 10px;
+  }
+
+  .leaf-2 {
+    width: 20px;
+    height: 20px;
+  }
+
+  .leaf-3 {
+    width: 15px;
+    height: 20px;
+  }
+
+  .leaf-4 {
+    width: 25px;
+    height: 20px;
+  }
+
+  .leaf-5 {
+    width: 25px;
+    height: 15px;
+  }
+}
