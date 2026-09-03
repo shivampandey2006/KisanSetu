@@ -58,7 +58,7 @@ const Login = () => {
   const isLogin = mode === "login";
 
   return (
-    <div className="flex min-h-80% w-[80%] mx-auto flex-col bg-[#f6fbf4] dark:bg-[#09090bea] md:flex-row">
+    <div className="flex min-h-80% w-[80%] pt-20 mx-auto flex-col bg-[#f6fbf4] dark:bg-[#09090bea] md:flex-row">
       
       <style>{`
         @keyframes leafDrift {
