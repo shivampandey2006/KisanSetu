@@ -145,10 +145,9 @@ const FarmerDashboard = () => {
           {/* RIGHT CONTROLS */}
           <div className="flex items-center gap-2 sm:gap-4">
             <div className="hidden text-right lg:block">
-              <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">
+              <p className="text-xs font-semibold  dark:text-gray-200   bg-gray-50 grayscale-50 text-black p-2 rounded-xl border-green-200 border-2">
                 {formattedDate}
               </p>
-              <p className="text-[10px] text-gray-400">{t("dashCompanion")}</p>
             </div>
 
             <select
@@ -278,7 +277,7 @@ const FarmerDashboard = () => {
         <main className="relative min-w-0 flex-1 min-h-screen w-full overflow-hidden">
           <img
             src="https://www.pixelstalk.net/wp-content/uploads/images1/Pictures-Farm-Download-free.jpg"
-            className="h-full w-full absolute object-cover grayscale-75 mask-[linear-gradient(to_bottom,black_55%,transparent_100%)]"
+            className="h-full w-full absolute object-cover grayscale-20 mask-[linear-gradient(to_bottom,black_55%,transparent_100%)]"
             alt=""
           />
 
@@ -301,7 +300,7 @@ const FarmerDashboard = () => {
             <div className="glow-drift absolute -bottom-28 right-28 h-56 w-56 rounded-full bg-lime-300/10 blur-3xl" />
             <img
               src="https://i.ibb.co/LDDRWgkp/Firefly-Remove-Background.png"
-              className="absolute h-100 w-160 overflow-hidden right-0"
+              className="absolute md:h-100 md:w-200 overflow-hidden  h-0 w-0 right-0  "
             />
 
             <div className="relative z-10 max-w-3xl">
@@ -315,10 +314,10 @@ const FarmerDashboard = () => {
               <h2 className="text-3xl font-extrabold tracking-tight sm:text-3xl lg:text-5xl pt-4 pb-2">
                 {t("namasteKisan")}
               </h2>
-
+               <div className=" w-110">
               <p className="mt-3 max-w-2xl text-sm leading-6 text-green-100 sm:text-base">
                 {t("heroDashDescription")}
-              </p>
+              </p></div>
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <button className="rounded-xl bg-white px-5 py-3 text-sm font-bold text-green-800 shadow-lg transition hover:-translate-y-0.5 hover:shadow-xl">
@@ -331,9 +330,7 @@ const FarmerDashboard = () => {
               </div>
             </div>
 
-            <div className="floating-leaf absolute bottom-4 right-8 hidden text-[100px] opacity-20 lg:block">
-              🌾
-            </div>
+         
           </section>
 
           {/* IMPORTANT TODAY */}

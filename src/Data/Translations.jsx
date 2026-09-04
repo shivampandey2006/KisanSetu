@@ -252,7 +252,7 @@ exploreSchemesArrow: "Explore schemes →",
 farmTipLabel: "Today's farm tip",
 farmTipHeading: "Check your fields before irrigation",
 farmTipDesc: "Weather conditions and soil moisture can help you decide the right irrigation time.",
-
+dashTagline: "For Farmer",
 
 
 
@@ -373,6 +373,7 @@ signUpNow: "साइन अप करें",
 logInNow: "लॉगिन करें",
 termsAgreement: "जारी रखकर, आप हमारी सेवा की शर्तों और गोपनीयता नीति से सहमत होते हैं।",
 backToHome: "होम पर वापस जाएँ",
+
 heroTagline: "हर मौसम की शुरुआत सही जानकारी से होती है।",
 
 // hi
