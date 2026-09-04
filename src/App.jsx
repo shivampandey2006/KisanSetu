@@ -10,42 +10,65 @@ import Login from "./Pages/Login/Login";
 import MarketPlace from "./Pages/MarketPlace/MarketPlace";
 import MoreToKnow from "./components/HowItHelps/MoreToKnow";
 import ScrollToTop from "./components/ScrollToTop";
+
 import FarmerDashboard from "./Pages/FarmerDashboard/FarmerDash";
+import BuyerDashboard from "./Pages/BuyerDashboard/BuyerDashboard";
 
 const App = () => {
   const location = useLocation();
 
+  // Pages where the public Header should NOT appear
   const hideHeader =
     location.pathname === "/login" ||
     location.pathname === "/more-to-know" ||
-    location.pathname === "/farmer-dashboard";
+    location.pathname === "/farmer-dashboard" ||
+    location.pathname === "/buyer-dashboard";
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
-      
+
       <ScrollToTop />
 
       <ScrollProgress />
 
-      {/* Header hidden on Login, More To Know & Farmer Dashboard */}
+      {/* Public Header */}
       {!hideHeader && <Header />}
 
       <Routes>
+
+        {/* Public Pages */}
         <Route path="/" element={<Home />} />
 
-        <Route path="/marketplace" element={<MarketPlace />} />
+        <Route
+          path="/marketplace"
+          element={<MarketPlace />}
+        />
 
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-        <Route path="/more-to-know" element={<MoreToKnow />} />
+        <Route
+          path="/more-to-know"
+          element={<MoreToKnow />}
+        />
 
+        {/* Farmer Dashboard */}
         <Route
           path="/farmer-dashboard"
           element={<FarmerDashboard />}
         />
+
+        {/* Buyer Dashboard */}
+        <Route
+          path="/buyer-dashboard"
+          element={<BuyerDashboard />}
+        />
+
       </Routes>
 
-      {/* Footer hidden only on Login */}
+      {/* Footer */}
       {location.pathname !== "/login" && <Footer />}
 
     </div>
