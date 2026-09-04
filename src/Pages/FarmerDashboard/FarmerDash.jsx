@@ -145,7 +145,7 @@ const FarmerDashboard = () => {
           {/* RIGHT CONTROLS */}
           <div className="flex items-center gap-2 sm:gap-4">
             <div className="hidden text-right lg:block">
-              <p className="text-xs font-semibold  dark:text-gray-200   bg-gray-50 grayscale-50 text-black p-2 rounded-xl border-green-200 border-2">
+              <p className="text-xs font-semibold  dark:text-gray-200 text-green-600    p-2 rounded-xl border-green-200 border-2">
                 {formattedDate}
               </p>
             </div>
