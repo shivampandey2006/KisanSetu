@@ -49,21 +49,104 @@ const GoogleIcon = () => (
 );
 
 const Login = () => {
-  const { t, language, changeLanguage } = useLanguage();
+ const { t, language, changeLanguage } = useLanguage();
 
   const [mode, setMode] = useState("login");
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [role, setRole] = useState("");
+
   const navigate = useNavigate();
 
   const isLogin = mode === "login";
 
-  // LOGIN → FARMER DASHBOARD
-  const handleLogin = () => {
-    navigate("/farmer-dashboard");
-  };
+ 
 
+  // LOGIN → FARMER DASHBOARD
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  // =========================
+  // SIGN UP
+  // =========================
+  if (!isLogin) {
+    if (!role) {
+      alert("Please select whether you are a Farmer or Buyer.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    const users =
+      JSON.parse(localStorage.getItem("kisanSetuUsers")) || [];
+
+    const existingUser = users.find(
+      (user) => user.email === email
+    );
+
+    if (existingUser) {
+      alert("An account with this email already exists.");
+      return;
+    }
+
+    const newUser = {
+      email,
+      role,
+    };
+
+    users.push(newUser);
+
+    localStorage.setItem(
+      "kisanSetuUsers",
+      JSON.stringify(users)
+    );
+
+    localStorage.setItem("kisanSetuCurrentUser", JSON.stringify(newUser));
+
+    if (role === "farmer") {
+      navigate("/farmer-dashboard");
+    } else {
+      navigate("/buyer-dashboard");
+    }
+
+    return;
+  }
+
+  // =========================
+  // LOGIN
+  // =========================
+
+  const users =
+    JSON.parse(localStorage.getItem("kisanSetuUsers")) || [];
+
+  const user = users.find(
+    (user) => user.email === email
+  );
+
+  if (!user) {
+    alert("Account not found. Please sign up first.");
+    return;
+  }
+
+  localStorage.setItem(
+    "kisanSetuCurrentUser",
+    JSON.stringify(user)
+  );
+
+  if (user.role === "farmer") {
+    navigate("/farmer-dashboard");
+  } else if (user.role === "buyer") {
+    navigate("/buyer-dashboard");
+  }
+};
   return (
     <div className="flex min-h-80% w-[80%] pt-20 mx-auto flex-col bg-[#f6fbf4] dark:bg-[#09090bea] md:flex-row">
 
@@ -211,16 +294,10 @@ const Login = () => {
           </p>
 
           {/* FORM */}
-          <form
-            className="mt-8 space-y-5"
-            onSubmit={(e) => {
-              e.preventDefault();
-
-              if (isLogin) {
-                handleLogin();
-              }
-            }}
-          >
+         <form
+  className="mt-8 space-y-5"
+  onSubmit={handleSubmit}
+>
 
             {/* FULL NAME */}
             {!isLogin && (
@@ -243,11 +320,13 @@ const Login = () => {
                 {t("emailAddress")}
               </label>
 
-              <input
-                type="email"
-                required
-                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
-              />
+             <input
+  type="email"
+  required
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
+/>
             </div>
 
             {/* PHONE */}
@@ -265,6 +344,65 @@ const Login = () => {
               </div>
             )}
 
+
+
+{/* ROLE */}
+{!isLogin && (
+  <div>
+    <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+      I want to use KisanSetu as
+    </label>
+
+    <div className="grid grid-cols-2 gap-3">
+
+      {/* FARMER */}
+      <button
+        type="button"
+        onClick={() => setRole("farmer")}
+        className={`rounded-xl border p-4 text-left transition ${
+          role === "farmer"
+            ? "border-green-600 bg-green-50 ring-2 ring-green-100 dark:border-green-500 dark:bg-green-950/30 dark:ring-green-900"
+            : "border-gray-200 bg-white hover:border-green-300 dark:border-gray-800 dark:bg-[#111311]"
+        }`}
+      >
+        <div className="text-2xl">👨‍🌾</div>
+
+        <p className="mt-2 font-semibold text-gray-800 dark:text-white">
+          Farmer
+        </p>
+
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          Sell crops & produce
+        </p>
+      </button>
+
+      {/* BUYER */}
+      <button
+        type="button"
+        onClick={() => setRole("buyer")}
+        className={`rounded-xl border p-4 text-left transition ${
+          role === "buyer"
+            ? "border-green-600 bg-green-50 ring-2 ring-green-100 dark:border-green-500 dark:bg-green-950/30 dark:ring-green-900"
+            : "border-gray-200 bg-white hover:border-green-300 dark:border-gray-800 dark:bg-[#111311]"
+        }`}
+      >
+        <div className="text-2xl">🛒</div>
+
+        <p className="mt-2 font-semibold text-gray-800 dark:text-white">
+          Buyer
+        </p>
+
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          Buy fresh produce
+        </p>
+      </button>
+
+    </div>
+  </div>
+)}
+
+
+
             {/* PASSWORD */}
             <div>
               <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -273,11 +411,13 @@ const Login = () => {
 
               <div className="relative">
 
-                <input
-                  type={showPass ? "text" : "password"}
-                  required
-                  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-11 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
-                />
+               <input
+  type={showPass ? "text" : "password"}
+  required
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-11 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
+/>
 
                 <button
                   type="button"
@@ -299,11 +439,13 @@ const Login = () => {
 
                 <div className="relative">
 
-                  <input
-                    type={showConfirm ? "text" : "password"}
-                    required
-                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-11 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
-                  />
+                 <input
+  type={showConfirm ? "text" : "password"}
+  required
+  value={confirmPassword}
+  onChange={(e) => setConfirmPassword(e.target.value)}
+  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-11 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
+/>
 
                   <button
                     type="button"
