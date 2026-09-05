@@ -1,3 +1,8 @@
+import Market from "./pages/market/market.jsx";
+
+function App() {
+  return <Market />;
+}
 import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 
