@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+
 import { languages } from "../../Data/Translations";
 import { useLanguage } from "../../Context/LanguageContext";
 
@@ -33,14 +38,17 @@ const GoogleIcon = () => (
       fill="#4285F4"
       d="M23.5 12.3c0-.8-.1-1.6-.2-2.4H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.7z"
     />
+
     <path
       fill="#34A853"
       d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.1-4 1.1-3.1 0-5.7-2.1-6.6-4.9H1.4v3.1C3.3 21.3 7.3 24 12 24z"
     />
+
     <path
       fill="#FBBC05"
       d="M5.4 14.3c-.2-.7-.4-1.5-.4-2.3s.1-1.6.4-2.3V6.6H1.4A11.9 11.9 0 0 0 0 12c0 1.9.5 3.8 1.4 5.4l4-3.1z"
     />
+
     <path
       fill="#EA4335"
       d="M12 4.8c1.7 0 3.3.6 4.5 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.3 2.7 1.4 6.6l4 3.1c.9-2.8 3.5-4.9 6.6-4.9z"
@@ -49,9 +57,13 @@ const GoogleIcon = () => (
 );
 
 const Login = () => {
- const { t, language, changeLanguage } = useLanguage();
+  const { t, language, changeLanguage } = useLanguage();
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [mode, setMode] = useState("login");
+
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -61,94 +73,166 @@ const Login = () => {
 
   const [role, setRole] = useState("");
 
-  const navigate = useNavigate();
-
   const isLogin = mode === "login";
 
- 
+  // =====================================================
+  // WHERE DID THE USER COME FROM?
+  // =====================================================
 
-  // LOGIN → FARMER DASHBOARD
-const handleSubmit = (e) => {
-  e.preventDefault();
+  const redirectAfterAuth = location.state?.from || null;
 
-  // =========================
-  // SIGN UP
-  // =========================
-  if (!isLogin) {
-    if (!role) {
-      alert("Please select whether you are a Farmer or Buyer.");
+  // =====================================================
+  // AUTH REDIRECT FUNCTION
+  // =====================================================
+
+  const redirectUser = (user) => {
+    /*
+      If user came from a protected page such as:
+
+      /marketplace/sell
+
+      then send them back there after login/signup.
+    */
+
+    if (redirectAfterAuth) {
+      navigate(redirectAfterAuth, {
+        replace: true,
+      });
+
       return;
     }
 
-    if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+    // Normal login/signup flow
+    if (user.role === "farmer") {
+      navigate("/farmer-dashboard", {
+        replace: true,
+      });
+    } else if (user.role === "buyer") {
+      navigate("/buyer-dashboard", {
+        replace: true,
+      });
+    }
+  };
+
+  // =====================================================
+  // FORM SUBMIT
+  // =====================================================
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // ===================================================
+    // SIGN UP
+    // ===================================================
+
+    if (!isLogin) {
+      // Role required
+      if (!role) {
+        alert("Please select whether you are a Farmer or Buyer.");
+        return;
+      }
+
+      // Password confirmation
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      // Get existing users
+      const users =
+        JSON.parse(
+          localStorage.getItem("kisanSetuUsers")
+        ) || [];
+
+      // Check existing account
+      const existingUser = users.find(
+        (user) =>
+          user.email.toLowerCase() ===
+          email.toLowerCase()
+      );
+
+      if (existingUser) {
+        alert(
+          "An account with this email already exists."
+        );
+        return;
+      }
+
+      // Create user
+      const newUser = {
+        email: email.trim(),
+        role,
+      };
+
+      // Save user
+      users.push(newUser);
+
+      localStorage.setItem(
+        "kisanSetuUsers",
+        JSON.stringify(users)
+      );
+
+      // Mark user as logged in
+      localStorage.setItem(
+        "kisanSetuCurrentUser",
+        JSON.stringify(newUser)
+      );
+
+      // Redirect
+      redirectUser(newUser);
+
       return;
     }
+
+    // ===================================================
+    // LOGIN
+    // ===================================================
 
     const users =
-      JSON.parse(localStorage.getItem("kisanSetuUsers")) || [];
+      JSON.parse(
+        localStorage.getItem("kisanSetuUsers")
+      ) || [];
 
-    const existingUser = users.find(
-      (user) => user.email === email
+    const user = users.find(
+      (user) =>
+        user.email.toLowerCase() ===
+        email.toLowerCase()
     );
 
-    if (existingUser) {
-      alert("An account with this email already exists.");
+    // Account doesn't exist
+    if (!user) {
+      alert(
+        "Account not found. Please sign up first."
+      );
       return;
     }
 
-    const newUser = {
-      email,
-      role,
-    };
-
-    users.push(newUser);
+    // ===================================================
+    // SAVE CURRENT USER
+    // ===================================================
 
     localStorage.setItem(
-      "kisanSetuUsers",
-      JSON.stringify(users)
+      "kisanSetuCurrentUser",
+      JSON.stringify(user)
     );
 
-    localStorage.setItem("kisanSetuCurrentUser", JSON.stringify(newUser));
+    // ===================================================
+    // REDIRECT
+    // ===================================================
 
-    if (role === "farmer") {
-      navigate("/farmer-dashboard");
-    } else {
-      navigate("/buyer-dashboard");
-    }
+    redirectUser(user);
+  };
 
-    return;
-  }
+  // =====================================================
+  // UI
+  // =====================================================
 
-  // =========================
-  // LOGIN
-  // =========================
-
-  const users =
-    JSON.parse(localStorage.getItem("kisanSetuUsers")) || [];
-
-  const user = users.find(
-    (user) => user.email === email
-  );
-
-  if (!user) {
-    alert("Account not found. Please sign up first.");
-    return;
-  }
-
-  localStorage.setItem(
-    "kisanSetuCurrentUser",
-    JSON.stringify(user)
-  );
-
-  if (user.role === "farmer") {
-    navigate("/farmer-dashboard");
-  } else if (user.role === "buyer") {
-    navigate("/buyer-dashboard");
-  }
-};
   return (
-    <div className="flex min-h-80% w-[80%] pt-20 mx-auto flex-col bg-[#f6fbf4] dark:bg-[#09090bea] md:flex-row">
+    <div className="flex min-h-screen w-full flex-col bg-[#f6fbf4] dark:bg-[#09090bea] md:flex-row">
+
+      {/* =================================================
+          ANIMATION
+      ================================================= */}
 
       <style>{`
         @keyframes leafDrift {
@@ -170,8 +254,13 @@ const handleSubmit = (e) => {
         }
       `}</style>
 
-      {/* LEFT BRAND PANEL */}
+      {/* =================================================
+          LEFT BRAND PANEL
+      ================================================= */}
+
       <div className="relative hidden overflow-hidden bg-[#123524] px-12 py-14 text-[#f6fbf4] md:flex md:w-[46%] md:flex-col md:justify-between">
+
+        {/* Background Lines */}
 
         <svg
           className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.08]"
@@ -193,14 +282,22 @@ const handleSubmit = (e) => {
           />
         </svg>
 
+        {/* Logo */}
+
         <Link
           to="/"
           className="relative z-10 w-fit text-2xl font-bold"
         >
-          Kisan<span className="text-[#a7d7b3]">Setu</span>
+          Kisan
+          <span className="text-[#a7d7b3]">
+            Setu
+          </span>
         </Link>
 
+        {/* Tagline */}
+
         <div className="relative z-10 max-w-sm">
+
           <span className="leaf-drift inline-block text-5xl">
             🌿
           </span>
@@ -208,46 +305,74 @@ const handleSubmit = (e) => {
           <h1 className="font-display mt-6 text-4xl font-semibold leading-[1.15] sm:text-5xl">
             {t("heroTagline")}
           </h1>
+
         </div>
+
+        {/* Copyright */}
 
         <p className="relative z-10 text-sm text-[#a7d7b3]">
           © {new Date().getFullYear()} KisanSetu
         </p>
+
       </div>
 
-      {/* RIGHT FORM PANEL */}
-      <div className="flex flex-1 flex-col px-6 py-8 sm:px-12 md:px-16 lg:px-24 md:justify-center">
+      {/* =================================================
+          RIGHT FORM PANEL
+      ================================================= */}
 
-        {/* MOBILE LOGO + LANGUAGE */}
+      <div className="flex min-h-screen flex-1 flex-col px-6 py-8 sm:px-12 md:px-16 lg:px-24 md:justify-center">
+
+        {/* =================================================
+            MOBILE LOGO + LANGUAGE
+        ================================================= */}
+
         <div className="mb-10 flex items-center justify-between md:absolute md:right-10 md:top-8 md:mb-0">
 
           <Link
             to="/"
             className="text-xl font-bold text-green-700 dark:text-green-400 md:hidden"
           >
-            Kisan<span className="text-green-900 dark:text-green-200">
+            Kisan
+            <span className="text-green-900 dark:text-green-200">
               Setu
             </span>
           </Link>
 
           <div className="relative ml-auto">
+
             <select
               value={language}
-              onChange={(e) => changeLanguage(e.target.value)}
+              onChange={(e) =>
+                changeLanguage(e.target.value)
+              }
               className="appearance-none rounded-full border border-green-200 bg-white px-4 py-2 pr-8 text-sm font-medium text-gray-700 shadow-sm outline-none transition hover:border-green-400 dark:border-green-900 dark:bg-[#111311] dark:text-gray-200"
             >
+
               {languages.map((lang) => (
-                <option key={lang.code} value={lang.code}>
+                <option
+                  key={lang.code}
+                  value={lang.code}
+                >
                   {lang.nativeName}
                 </option>
               ))}
+
             </select>
+
           </div>
+
         </div>
+
+        {/* =================================================
+            FORM CONTAINER
+        ================================================= */}
 
         <div className="mx-auto w-full max-w-md">
 
-          {/* LOGIN / SIGNUP TOGGLE */}
+          {/* =================================================
+              LOGIN / SIGNUP TOGGLE
+          ================================================= */}
+
           <div className="relative mb-10 grid grid-cols-2 rounded-full bg-green-50 p-1 text-sm font-medium dark:bg-[#111311]">
 
             <span
@@ -282,26 +407,41 @@ const handleSubmit = (e) => {
             >
               {t("signUpNow")}
             </button>
+
           </div>
 
-          {/* HEADING */}
+          {/* =================================================
+              HEADING
+          ================================================= */}
+
           <h2 className="font-display text-3xl font-semibold text-gray-900 dark:text-white">
-            {isLogin ? t("loginWelcome") : t("signupWelcome")}
+            {isLogin
+              ? t("loginWelcome")
+              : t("signupWelcome")}
           </h2>
 
           <p className="mt-2 text-sm leading-6 text-gray-500 dark:text-gray-400">
-            {isLogin ? t("loginSubtitle") : t("signupSubtitle")}
+            {isLogin
+              ? t("loginSubtitle")
+              : t("signupSubtitle")}
           </p>
 
-          {/* FORM */}
-         <form
-  className="mt-8 space-y-5"
-  onSubmit={handleSubmit}
->
+          {/* =================================================
+              FORM
+          ================================================= */}
 
-            {/* FULL NAME */}
+          <form
+            className="mt-8 space-y-5"
+            onSubmit={handleSubmit}
+          >
+
+            {/* =================================================
+                FULL NAME
+            ================================================= */}
+
             {!isLogin && (
               <div>
+
                 <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t("fullName")}
                 </label>
@@ -311,27 +451,39 @@ const handleSubmit = (e) => {
                   required
                   className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
                 />
+
               </div>
             )}
 
-            {/* EMAIL */}
+            {/* =================================================
+                EMAIL
+            ================================================= */}
+
             <div>
+
               <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t("emailAddress")}
               </label>
 
-             <input
-  type="email"
-  required
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
-/>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
+                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
+              />
+
             </div>
 
-            {/* PHONE */}
+            {/* =================================================
+                PHONE
+            ================================================= */}
+
             {!isLogin && (
               <div>
+
                 <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t("phoneNumber")}
                 </label>
@@ -341,135 +493,182 @@ const handleSubmit = (e) => {
                   required
                   className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
                 />
+
               </div>
             )}
 
+            {/* =================================================
+                ROLE
+            ================================================= */}
 
+            {!isLogin && (
+              <div>
 
-{/* ROLE */}
-{!isLogin && (
-  <div>
-    <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-      I want to use KisanSetu as
-    </label>
+                <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  I want to use KisanSetu as
+                </label>
 
-    <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-3">
 
-      {/* FARMER */}
-      <button
-        type="button"
-        onClick={() => setRole("farmer")}
-        className={`rounded-xl border p-4 text-left transition ${
-          role === "farmer"
-            ? "border-green-600 bg-green-50 ring-2 ring-green-100 dark:border-green-500 dark:bg-green-950/30 dark:ring-green-900"
-            : "border-gray-200 bg-white hover:border-green-300 dark:border-gray-800 dark:bg-[#111311]"
-        }`}
-      >
-        <div className="text-2xl">👨‍🌾</div>
+                  {/* FARMER */}
 
-        <p className="mt-2 font-semibold text-gray-800 dark:text-white">
-          Farmer
-        </p>
+                  <button
+                    type="button"
+                    onClick={() => setRole("farmer")}
+                    className={`rounded-xl border p-4 text-left transition ${
+                      role === "farmer"
+                        ? "border-green-600 bg-green-50 ring-2 ring-green-100 dark:border-green-500 dark:bg-green-950/30 dark:ring-green-900"
+                        : "border-gray-200 bg-white hover:border-green-300 dark:border-gray-800 dark:bg-[#111311]"
+                    }`}
+                  >
 
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Sell crops & produce
-        </p>
-      </button>
+                    <div className="text-2xl">
+                      👨‍🌾
+                    </div>
 
-      {/* BUYER */}
-      <button
-        type="button"
-        onClick={() => setRole("buyer")}
-        className={`rounded-xl border p-4 text-left transition ${
-          role === "buyer"
-            ? "border-green-600 bg-green-50 ring-2 ring-green-100 dark:border-green-500 dark:bg-green-950/30 dark:ring-green-900"
-            : "border-gray-200 bg-white hover:border-green-300 dark:border-gray-800 dark:bg-[#111311]"
-        }`}
-      >
-        <div className="text-2xl">🛒</div>
+                    <p className="mt-2 font-semibold text-gray-800 dark:text-white">
+                      Farmer
+                    </p>
 
-        <p className="mt-2 font-semibold text-gray-800 dark:text-white">
-          Buyer
-        </p>
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      Sell crops & produce
+                    </p>
 
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Buy fresh produce
-        </p>
-      </button>
+                  </button>
 
-    </div>
-  </div>
-)}
+                  {/* BUYER */}
 
+                  <button
+                    type="button"
+                    onClick={() => setRole("buyer")}
+                    className={`rounded-xl border p-4 text-left transition ${
+                      role === "buyer"
+                        ? "border-green-600 bg-green-50 ring-2 ring-green-100 dark:border-green-500 dark:bg-green-950/30 dark:ring-green-900"
+                        : "border-gray-200 bg-white hover:border-green-300 dark:border-gray-800 dark:bg-[#111311]"
+                    }`}
+                  >
 
+                    <div className="text-2xl">
+                      🛒
+                    </div>
 
-            {/* PASSWORD */}
+                    <p className="mt-2 font-semibold text-gray-800 dark:text-white">
+                      Buyer
+                    </p>
+
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      Buy fresh produce
+                    </p>
+
+                  </button>
+
+                </div>
+
+              </div>
+            )}
+
+            {/* =================================================
+                PASSWORD
+            ================================================= */}
+
             <div>
+
               <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 {t("password")}
               </label>
 
               <div className="relative">
 
-               <input
-  type={showPass ? "text" : "password"}
-  required
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-11 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
-/>
+                <input
+                  type={
+                    showPass
+                      ? "text"
+                      : "password"
+                  }
+                  required
+                  value={password}
+                  onChange={(e) =>
+                    setPassword(e.target.value)
+                  }
+                  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-11 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
+                />
 
                 <button
                   type="button"
-                  onClick={() => setShowPass((v) => !v)}
+                  onClick={() =>
+                    setShowPass((v) => !v)
+                  }
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-600"
                 >
                   <EyeIcon open={showPass} />
                 </button>
 
               </div>
+
             </div>
 
-            {/* CONFIRM PASSWORD */}
+            {/* =================================================
+                CONFIRM PASSWORD
+            ================================================= */}
+
             {!isLogin && (
               <div>
+
                 <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {t("confirmPassword")}
                 </label>
 
                 <div className="relative">
 
-                 <input
-  type={showConfirm ? "text" : "password"}
-  required
-  value={confirmPassword}
-  onChange={(e) => setConfirmPassword(e.target.value)}
-  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-11 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
-/>
+                  <input
+                    type={
+                      showConfirm
+                        ? "text"
+                        : "password"
+                    }
+                    required
+                    value={confirmPassword}
+                    onChange={(e) =>
+                      setConfirmPassword(
+                        e.target.value
+                      )
+                    }
+                    className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pr-11 text-sm outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100 dark:border-gray-800 dark:bg-[#111311] dark:text-white dark:focus:ring-green-900"
+                  />
 
                   <button
                     type="button"
-                    onClick={() => setShowConfirm((v) => !v)}
+                    onClick={() =>
+                      setShowConfirm((v) => !v)
+                    }
                     className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-600"
                   >
-                    <EyeIcon open={showConfirm} />
+                    <EyeIcon
+                      open={showConfirm}
+                    />
                   </button>
 
                 </div>
+
               </div>
             )}
 
-            {/* REMEMBER + FORGOT */}
+            {/* =================================================
+                REMEMBER + FORGOT
+            ================================================= */}
+
             {isLogin && (
               <div className="flex items-center justify-between text-sm">
 
                 <label className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+
                   <input
                     type="checkbox"
                     className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
                   />
 
                   {t("rememberMe")}
+
                 </label>
 
                 <button
@@ -482,52 +681,82 @@ const handleSubmit = (e) => {
               </div>
             )}
 
-            {/* SUBMIT */}
+            {/* =================================================
+                SUBMIT
+            ================================================= */}
+
             <button
               type="submit"
               className="w-full rounded-xl bg-green-700 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-green-800 active:scale-[0.99]"
             >
-              {isLogin ? t("loginButton") : t("signupButton")}
+              {isLogin
+                ? t("loginButton")
+                : t("signupButton")}
             </button>
 
           </form>
 
-          {/* DIVIDER */}
+          {/* =================================================
+              DIVIDER
+          ================================================= */}
+
           <div className="my-7 flex items-center gap-4 text-xs text-gray-400">
+
             <span className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
 
             {t("orContinueWith")}
 
             <span className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
+
           </div>
 
-          {/* GOOGLE */}
+          {/* =================================================
+              GOOGLE
+          ================================================= */}
+
           <button
             type="button"
             className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white py-3 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-gray-800 dark:bg-[#111311] dark:text-gray-200"
           >
             <GoogleIcon />
+
             {t("continueWithGoogle")}
           </button>
 
-          {/* SWITCH LOGIN/SIGNUP */}
+          {/* =================================================
+              SWITCH LOGIN / SIGNUP
+          ================================================= */}
+
           <p className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
 
             {isLogin
               ? t("noAccountYet")
-              : t("alreadyHaveAccount")}{" "}
+              : t("alreadyHaveAccount")}
+
+            {" "}
 
             <button
               type="button"
-              onClick={() => setMode(isLogin ? "signup" : "login")}
+              onClick={() =>
+                setMode(
+                  isLogin
+                    ? "signup"
+                    : "login"
+                )
+              }
               className="font-semibold text-green-700 hover:text-green-800 dark:text-green-400"
             >
-              {isLogin ? t("signUpNow") : t("logInNow")}
+              {isLogin
+                ? t("signUpNow")
+                : t("logInNow")}
             </button>
 
           </p>
 
-          {/* TERMS */}
+          {/* =================================================
+              TERMS
+          ================================================= */}
+
           <p className="mt-4 text-center text-xs leading-5 text-gray-400 dark:text-gray-600">
             {t("termsAgreement")}
           </p>
