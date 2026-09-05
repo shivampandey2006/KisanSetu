@@ -27,7 +27,7 @@ export const navItems = [
 
   {
     name: "marketplace",
-    path: "/marketplace",
+    // path: "/marketplace",
 
     dropdown: [
       {

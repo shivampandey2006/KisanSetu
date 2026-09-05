@@ -290,7 +290,11 @@ prodAppleName: "Himalayan Apples",
 prodBananaName: "Ripe Bananas",
 prodMaizeName: "Golden Maize",
 prodMustardSeedName: "Mustard Seeds",
-
+registeredFarmers: "Registered Farmers",
+activeTraders: "Active Traders",
+mandisCovered: "Mandis Covered",
+monthlyTransactions: "Monthly Transactions",
+commoditiesTracked: "Commodities Tracked",
 
 
 
@@ -548,7 +552,11 @@ prodMaizeName: "सुनहरा मक्का",
 prodMustardSeedName: "सरसों के बीज",
 
 
-
+registeredFarmers: "पंजीकृत किसान",
+activeTraders: "सक्रिय व्यापारी",
+mandisCovered: "कवर की गई मंडियां",
+monthlyTransactions: "मासिक लेनदेन",
+commoditiesTracked: "ट्रैक की गई फसलें",
 
 
   },
@@ -838,6 +846,13 @@ prodBananaName: "पिकलेली केळी",
 prodMaizeName: "सोनेरी मका",
 prodMustardSeedName: "मोहरीचे बियाणे",
 farmTipDesc: "हवामान परिस्थिती आणि जमिनीतील ओलावा योग्य सिंचन वेळ ठरवण्यास मदत करू शकतो.",
+registeredFarmers: "नोंदणीकृत शेतकरी",
+activeTraders: "सक्रिय व्यापारी",
+mandisCovered: "समाविष्ट बाजारपेठा",
+monthlyTransactions: "मासिक व्यवहार",
+commoditiesTracked: "ट्रॅक केलेल्या पिके",
+
+
   },
 
 
@@ -1051,7 +1066,11 @@ exploreSchemesArrow: "યોજનાઓ જુઓ →",
 farmTipLabel: "આજની ખેતી ટિપ",
 farmTipHeading: "સિંચાઈ પહેલાં તમારા ખેતરો તપાસો",
 farmTipDesc: "હવામાનની સ્થિતિ અને જમીનનો ભેજ યોગ્ય સિંચાઈ સમય નક્કી કરવામાં મદદ કરી શકે છે.",
-
+registeredFarmers: "નોંધાયેલા ખેડૂતો",
+activeTraders: "સક્રિય વેપારીઓ",
+mandisCovered: "આવરી લેવાયેલી મંડીઓ",
+monthlyTransactions: "માસિક વ્યવહારો",
+commoditiesTracked: "ટ્રેક કરાયેલી કોમોડિટીઝ",
 
   },
 
@@ -1552,6 +1571,11 @@ prodBananaName: "পাকা কলা",
 prodMaizeName: "সোনালী ভুট্টা",
 prodMustardSeedName: "সরিষার বীজ",
 farmTipDesc: "আবহাওয়ার অবস্থা এবং মাটির আর্দ্রতা সঠিক সেচের সময় নির্ধারণে সাহায্য করতে পারে।",
+registeredFarmers: "নিবন্ধিত কৃষক",
+activeTraders: "সক্রিয় ব্যবসায়ী",
+mandisCovered: "অন্তর্ভুক্ত মান্ডি",
+monthlyTransactions: "মাসিক লেনদেন",
+commoditiesTracked: "ট্র্যাক করা পণ্য",
   },
 
 
@@ -1565,6 +1589,11 @@ farmTipDesc: "আবহাওয়ার অবস্থা এবং মাট
     marketplace: "சந்தை தளம்",
     weather: "வானிலை",
     schemesUpdates: "திட்டங்கள் மற்றும் புதுப்பிப்புகள்",
+    registeredFarmers: "பதிவு செய்யப்பட்ட விவசாயிகள்",
+activeTraders: "செயலில் உள்ள வர்த்தகர்கள்",
+mandisCovered: "உள்ளடக்கப்பட்ட மண்டிகள்",
+monthlyTransactions: "மாதாந்திர பரிவர்த்தனைகள்",
+commoditiesTracked: "கண்காணிக்கப்படும் பொருட்கள்",
 
     liveMandiPrices: "நேரடி மண்டி விலைகள்",
     nearbyMandis: "அருகிலுள்ள மண்டிகள்",
@@ -2048,6 +2077,11 @@ prodAppleName: "హిమాలయన్ ఆపిల్స్",
 prodBananaName: "పండిన అరటిపండ్లు",
 prodMaizeName: "బంగారు మొక్కజొన్న",
 prodMustardSeedName: "ఆవాలు",
+registeredFarmers: "నమోదైన రైతులు",
+activeTraders: "క్రియాశీల వ్యాపారులు",
+mandisCovered: "కవర్ చేయబడిన మండీలు",
+monthlyTransactions: "నెలవారీ లావాదేవీలు",
+commoditiesTracked: "ట్రాక్ చేయబడుతున్న పంటలు",
 farmTipDesc: "వాతావరణ పరిస్థితులు మరియు నేల తేమ సరైన నీటిపారుదల సమయాన్ని నిర్ణయించడంలో సహాయపడతాయి.",
   },
 
